@@ -1,0 +1,40 @@
+exp_name: ronet_hercules
+model: ronet
+
+## training (same as configs.yaml)
+num_points: 256
+batch_size: 16
+val_batch_size: 8
+epochs: 60
+lr: 0.001
+decay_epochs: 1
+decay_rate: 0.9
+
+## device
+cuda_device: '0'
+no_cuda: False
+seed: 1234
+num_workers: 8
+
+## dataset
+eval: True
+eval_split: val          # model selection on the validation split; test only with --eval --eval_split test
+dataset: herculesClipDatasetOdm
+train_set: train
+dataset_path: ''         # set with --dataset_path
+vis: False
+save_res: False
+
+## evaluation outputs (KITTI-style segment errors over 100-800 m)
+eval_gt_dir: ./eval_result/ground_truth_pose_hercules
+eval_pred_dir: ./eval_result/data_hercules
+eval_seqs: all
+eval_lengths: [100, 200, 300, 400, 500, 600, 700, 800]
+
+## GRU parameter
+mini_clip_len: 5
+update_len: 5
+
+## checkpoint
+load_checkpoint: False
+model_path: ''

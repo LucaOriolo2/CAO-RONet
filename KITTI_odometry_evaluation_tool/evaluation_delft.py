@@ -19,17 +19,18 @@ from KITTI_odometry_evaluation_tool.tools.pose_evaluation_utils import quat_pose
 
 
 class kittiOdomEval():
-    def __init__(self):
-        self.gt_dir = './eval_result/ground_truth_pose_delft'
-        self.result_dir = './eval_result/data_delft'
-        self.eva_seqs = 'delft_1,delft_4,delft_6,delft_9,delft_27'
+    def __init__(self, gt_dir='./eval_result/ground_truth_pose_delft', result_dir='./eval_result/data_delft',
+                 eva_seqs='delft_1,delft_4,delft_6,delft_9,delft_27', lengths=None):
+        self.gt_dir = gt_dir
+        self.result_dir = result_dir
+        self.eva_seqs = eva_seqs
         # self.eva_seqs = 'delft_4,delft_6,delft_12,delft_19,delft_23,delft_24,delft_26'
         assert os.path.exists(self.gt_dir), "Error of ground_truth pose path!"
         gt_files = glob.glob(self.gt_dir + '/*.txt')
         gt_files = [os.path.split(f)[1] for f in gt_files]
         self.seqs_with_gt = [os.path.splitext(f)[0] for f in gt_files]
 
-        self.lengths = [20,40,60,80,100,120,140,160]
+        self.lengths = lengths if lengths is not None else [20,40,60,80,100,120,140,160]
         self.num_lengths = len(self.lengths)
         self.eval_seqs  = []
         

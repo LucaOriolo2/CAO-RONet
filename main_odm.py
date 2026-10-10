@@ -89,7 +89,7 @@ def train(args, net, train_loader, val_loader, test_loader, textio, tb_logger):
         textio.cprint('====epoch: %d, learning rate: %f===='%(epoch, opt.param_groups[0]['lr']))
 
         textio.cprint('==starting training on the training set==')
-        if args.dataset == 'vodClipDataset' or args.dataset == 'vodClipDatasetOdm':
+        if 'Clip' in args.dataset:
             total_loss, loss_items = train_one_epoch_seq(args, net, train_loader, opt)
         else:
             total_loss, loss_items = train_one_epoch(args, net, train_loader, opt)
@@ -104,7 +104,7 @@ def train(args, net, train_loader, val_loader, test_loader, textio, tb_logger):
         tb_logger.add_scalar('qLoss', loss_items['qLoss'], epoch)
 
         textio.cprint('==starting evaluation on the validation set==')
-        if args.dataset == 'vodClipDataset' or args.dataset == 'vodClipDatasetOdm':
+        if 'Clip' in args.dataset:
             sf_metric, _, pose_metric, _, _, pose_metric_kitti = test_one_epoch_seq(args, net, test_loader, textio)
         else:
             sf_metric, _, pose_metric, _, _, pose_metric_kitti = eval_one_epoch(args, net, test_loader, textio)
@@ -157,7 +157,7 @@ def train(args, net, train_loader, val_loader, test_loader, textio, tb_logger):
 
 def main(io_args):
     
-    args = parse_args_from_yaml("configs.yaml")
+    args = parse_args_from_yaml(io_args.config)
     args.scan_map = io_args.scan_map
     args.eval = io_args.eval
     args.vis = io_args.vis
@@ -166,6 +166,8 @@ def main(io_args):
     args.model = io_args.model
     args.save_res = io_args.save_res
     args.dataset = io_args.dataset
+    if io_args.eval_split:
+        args.eval_split = io_args.eval_split
 
     # CUDA settings
     torch.cuda.reset_peak_memory_stats()
@@ -235,5 +237,7 @@ if __name__ == '__main__':
     parser.add_argument('--exp_name', type = str, default = 'cmflow_cvpr')
     parser.add_argument('--model', type = str, default = 'cmflow')
     parser.add_argument('--dataset', type = str, default = 'vodDataset')
+    parser.add_argument('--config', type = str, default = 'configs.yaml')
+    parser.add_argument('--eval_split', type = str, default = None, help='split evaluated during training (model selection) or with --eval')
     args = parser.parse_args()
     main(args)

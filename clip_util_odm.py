@@ -197,7 +197,11 @@ def test_one_epoch_seq(args, net, test_loader, textio):
     for metric in pose_metric:
         pose_metric[metric] = pose_metric[metric]/num_pcs
 
-    ##
+    # Output folders and evaluated sequences (VoD defaults unless set in the config)
+    gt_dir = args.get('eval_gt_dir', './eval_result/ground_truth_pose_delft')
+    pred_dir = args.get('eval_pred_dir', './eval_result/data_delft')
+    os.makedirs(gt_dir, exist_ok=True)
+    os.makedirs(pred_dir, exist_ok=True)
     for clip_info in test_loader.dataset.clips_info:
         gt_start = np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]])
         pred_start = np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]])
@@ -222,12 +226,15 @@ def test_one_epoch_seq(args, net, test_loader, textio):
         pred_pose = np.stack(pred_pose)
         pred_pose = pred_pose.reshape((pred_pose.shape[0], -1))[:, :12]
 
-        np.savetxt('./eval_result/ground_truth_pose_delft/' + clip_info['clip_name'] + '.txt', gt_pose, fmt='%f')
-        np.savetxt('./eval_result/data_delft/' + clip_info['clip_name'] + '.txt', pred_pose, fmt='%f')
+        np.savetxt(os.path.join(gt_dir, clip_info['clip_name'] + '.txt'), gt_pose, fmt='%f')
+        np.savetxt(os.path.join(pred_dir, clip_info['clip_name'] + '.txt'), pred_pose, fmt='%f')
 
     textio.cprint('###The inference speed is %.4fms per frame###'%(infer_time*1000/num_pcs))
 
-    pose_eval = kittiOdomEval()
+    eva_seqs = args.get('eval_seqs', 'delft_1,delft_4,delft_6,delft_9,delft_27')
+    if eva_seqs == 'all':
+        eva_seqs = ','.join(c['clip_name'] for c in test_loader.dataset.clips_info)
+    pose_eval = kittiOdomEval(gt_dir, pred_dir, eva_seqs, args.get('eval_lengths', None))
     pose_metric_kitti = pose_eval.eval(toCameraCoord=False)   # set the value according to the predicted results
 
     return sf_metric, seg_metric, pose_metric, gt_trans_all, pre_trans_all, pose_metric_kitti

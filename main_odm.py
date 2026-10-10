@@ -15,7 +15,10 @@ from utils import *
 from dataset import *
 from models import *
 import numpy as np
-import open3d as o3d
+try:
+    import open3d as o3d  # visualisation only
+except ImportError:
+    o3d = None
 from losses import *
 from matplotlib import pyplot as plt
 from clip_util_odm import test_one_epoch_seq, train_one_epoch_seq

@@ -4,7 +4,10 @@ import sys
 import torch
 from tqdm import tqdm
 import cv2
-import open3d as o3d
+try:
+    import open3d as o3d  # visualisation only
+except ImportError:
+    o3d = None
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.pyplot import MultipleLocator

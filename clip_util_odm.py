@@ -6,7 +6,10 @@ import torch
 # from time import clock
 from tqdm import tqdm
 import cv2
-import open3d as o3d
+try:
+    import open3d as o3d  # visualisation only
+except ImportError:
+    o3d = None
 import numpy as np
 from utils import *
 from models import *

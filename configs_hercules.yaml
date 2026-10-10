@@ -1,11 +1,11 @@
 exp_name: ronet_hercules
 model: ronet
 
-## training (same as configs.yaml)
+## training (configs.yaml values except epochs)
 num_points: 256
 batch_size: 16
 val_batch_size: 8
-epochs: 60
+epochs: 20               # upstream 60 on View-of-Delft; the HeRCULES training set is ~25x larger
 lr: 0.001
 decay_epochs: 1
 decay_rate: 0.9

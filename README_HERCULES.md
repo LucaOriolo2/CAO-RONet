@@ -7,7 +7,8 @@ schedule are unchanged; the changes only add the dataset and fix the evaluation 
 ## Changes from upstream
 - `dataset/hercules_clip_odm.py`: HeRCULES samples in the upstream clip format (same point
   sampling, features `[v_r, RCS, RCS]` and augmentation as the View-of-Delft class).
-- `configs_hercules.yaml`: upstream hyperparameters; model selection on the **validation**
+- `configs_hercules.yaml`: upstream hyperparameters except 20 epochs instead of 60 (training set ~25x
+  View-of-Delft, still more iterations than upstream); model selection on the **validation**
   split (upstream selects the checkpoint on the evaluation split it reports); KITTI-style
   segment errors over 100–800 m.
 - `main_odm.py`: `--config` and `--eval_split` arguments; any `*Clip*` dataset uses the
